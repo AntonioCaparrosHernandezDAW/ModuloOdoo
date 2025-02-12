@@ -15,4 +15,5 @@
     ],
     'installable': True,
     'auto_install': False,
+    'image': '/ProyectoLibros/static/description/logo.png'
 }
