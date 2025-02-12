@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_etiquetas" model="ir.actions.act_window">
+        <field name="name">Etiquetas</field>
+        <field name="res_model">etiquetas.model</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_etiquetas_tree" model="ir.ui.view">
+        <field name="name">etiquetas.tree</field>
+        <field name="model">etiquetas.model</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="color"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_etiquetas_form" model="ir.ui.view">
+        <field name="name">etiquetas.form</field>
+        <field name="model">etiquetas.model</field>
+        <field name="arch" type="xml">
+            <form string="Etiqueta">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_etiquetas_root" name="Etiquetas" parent="menu_libro_root"/>
+    <menuitem id="menu_etiquetas" name="Gestión de Etiquetas" parent="menu_etiquetas_root" action="action_etiquetas"/>
+</odoo>

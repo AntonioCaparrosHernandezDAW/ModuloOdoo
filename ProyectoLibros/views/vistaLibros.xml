@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_libro" model="ir.actions.act_window">
+        <field name="name">Libros</field>   <!-- Nombre que se muestra encima de "New" -->
+        <field name="res_model">libro</field>
+        <field name="view_mode">tree,form,kanban,search</field> <!-- Modos/botones habilitados -->
+    </record>
+
+    <!-- Manejador de acción de borrar -->
+    <record id="action_borrar_libro" model="ir.actions.server">
+        <field name="name">Borrar Libro</field>
+        <field name="model_id" ref="model_libro"/>
+        <field name="state">code</field>
+        <!-- Método de borrar libro -->
+        <field name="code">
+            model.browse(env.context.get('active_id')).unlink()
+        </field>
+    </record>
+
+
+    <!-- Código que gestiona los headers que se van a mostrar en el modo Lista -->
+    <record id="view_libro_tree" model="ir.ui.view">
+        <field name="name">libro.tree</field>
+        <field name="model">libro</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="autor"/>
+                <field name="fecha_publicacion"/>
+                <field name="isbn"/>
+                <field name="paginas"/>
+                <field name="editorial"/>
+                <field name="disponible"/>
+                
+                <!-- Botón de eliminar con icono -->
+                <button name="%(action_borrar_libro)d" type="action" context="{'active_id': id}" icon="fa-trash"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Control del formulario de creación -->
+    <record id="view_libro_form" model="ir.ui.view">
+        <field name="name">libro.form</field>
+        <field name="model">libro</field>
+        <field name="arch" type="xml">
+            <form string="Libro">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="autor"/>
+                            <field name="fecha_publicacion"/>
+                            <field name="isbn"/>
+                            <field name="paginas"/>
+                            <field name="editorial"/>
+                            <field name="disponible"/>
+                        </group>
+                        <group>
+                            <field name="imagen" widget="image" class="oe_avatar"/>
+                        </group>
+                        <group>
+                            <field name="etiquetas" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Control de el botón de Filtrar -->
+    <record id="view_libro_search" model="ir.ui.view">
+        <field name="name">libro.search</field>
+        <field name="model">libro</field>   <!--revisar-->
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="autor"/>
+                <field name="fecha_publicacion"/>
+                <field name="isbn"/>
+                <field name="editorial"/>
+                <field name="disponible"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Control de la vista tipo Kanban -->
+    <record id="view_libro_kanban" model="ir.ui.view">
+        <field name="name">libro.kanban</field>
+        <field name="model">libro</field>
+        <field name="arch" type="xml">
+            <kanban colors="disponible" default_group_by="editorial" default_order="fecha_publicacion desc" group_create="true" on_create="quick_create" group_delete="true" group_edit="true">
+                <!-- Agrupación por editorial y orden descendente por fecha de publicación -->
+                <field name="name"/>
+                <field name="autor"/>
+                <field name="fecha_publicacion"/>
+                <field name="isbn"/>
+                <field name="imagen"/>
+                <field name="disponible"/>
+                <field name="etiquetas"/>  <!-- Añadir el campo de etiquetas aquí -->
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card" style="margin-bottom:15px; border-radius:15px;">
+                            <div class="oe_kanban_global_click" style="margin:5px 15px;">
+                                <div style="display:flex">
+                                    <div class="oe_kanban_image" style="display: flex; align-items: center; justify-content: center; width:90%;">
+                                        <field name="imagen" widget="image" class="oe_kanban_avatar" options="{'size': [98, 128]}" style="padding-left:10%;"/>
+                                    </div>
+                                    <div style="width:10%;">
+                                        <button name="%(action_borrar_libro)d" type="action" context="{'active_id': id}" icon="fa-trash"/>  <!-- Botón de borrar con icono -->
+                                    </div>
+                                </div>
+                                
+                                <div class="oe_kanban_details" style="margin-top: 10px;">
+                                    <strong><field name="name"/></strong><br/>
+                                    <span>Autor: <field name="autor"/></span><br/>
+                                    <span>Fecha de Publicación: <field name="fecha_publicacion"/></span><br/>
+                                    <span>ISBN: <field name="isbn"/></span><br/>
+                                    <span>Editorial: <field name="editorial"/></span><br/>
+                                    <span>Disponible: <field name="disponible"/></span><br/>
+
+                                    <field name="etiquetas" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!-- Enlaces header -->
+    <menuitem id="menu_libro_root" name="Biblioteca"/>
+    <menuitem id="menu_libro" name="Gestión de Libros" parent="menu_libro_root" action="action_libro"/>
+</odoo>
